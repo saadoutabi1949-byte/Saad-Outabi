@@ -1,0 +1,6 @@
+{
+  "name": "Vectra Atelier — Architectural Apparel & Technical Footwear",
+  "description": "Direct-to-consumer luxury streetwear and technical sneakers store featuring integrated payment processing, member profiles, and real-time shipment status tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

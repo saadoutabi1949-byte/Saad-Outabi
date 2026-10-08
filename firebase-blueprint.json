@@ -1,0 +1,512 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Public and general non-PII profile information for an authenticated store member.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The Firebase Auth UID of the user.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Public display name of the member.",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "Avatar URL for the member profile.",
+          "minLength": 0,
+          "maxLength": 500
+        },
+        "membershipTier": {
+          "type": "string",
+          "description": "Member loyalty tier in Vectra Atelier.",
+          "enum": ["Standard", "Atelier Member", "Archive Collector"],
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the profile was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the profile was last updated."
+        }
+      },
+      "required": ["uid", "displayName", "photoURL", "membershipTier", "createdAt", "updatedAt"]
+    },
+    "UserPrivateInfo": {
+      "title": "UserPrivateInfo",
+      "description": "Isolated PII and saved shipping/payment preferences for a store member.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "The Firebase Auth UID of the owner.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "description": "Verified email address of the member.",
+          "minLength": 3,
+          "maxLength": 160
+        },
+        "phone": {
+          "type": "string",
+          "description": "Contact phone number for courier delivery notifications.",
+          "minLength": 0,
+          "maxLength": 40
+        },
+        "shippingAddress": {
+          "type": "string",
+          "description": "Default street address for deliveries.",
+          "minLength": 0,
+          "maxLength": 200
+        },
+        "shippingCity": {
+          "type": "string",
+          "description": "Default shipping city.",
+          "minLength": 0,
+          "maxLength": 80
+        },
+        "shippingPostalCode": {
+          "type": "string",
+          "description": "Default postal or ZIP code.",
+          "minLength": 0,
+          "maxLength": 24
+        },
+        "shippingCountry": {
+          "type": "string",
+          "description": "Default destination country.",
+          "minLength": 0,
+          "maxLength": 60
+        },
+        "preferredSizeShoe": {
+          "type": "string",
+          "description": "Preferred footwear size (EU/US).",
+          "minLength": 0,
+          "maxLength": 16
+        },
+        "preferredSizeApparel": {
+          "type": "string",
+          "description": "Preferred apparel size (S/M/L/XL).",
+          "minLength": 0,
+          "maxLength": 16
+        },
+        "savedCardLast4": {
+          "type": "string",
+          "description": "Last 4 digits of saved payment card.",
+          "minLength": 0,
+          "maxLength": 4
+        },
+        "savedCardBrand": {
+          "type": "string",
+          "description": "Brand of saved payment card.",
+          "minLength": 0,
+          "maxLength": 32
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "uid",
+        "email",
+        "phone",
+        "shippingAddress",
+        "shippingCity",
+        "shippingPostalCode",
+        "shippingCountry",
+        "preferredSizeShoe",
+        "preferredSizeApparel",
+        "savedCardLast4",
+        "savedCardBrand",
+        "updatedAt"
+      ]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer order record with real-time shipment status tracking.",
+      "type": "object",
+      "properties": {
+        "orderNumber": {
+          "type": "string",
+          "description": "Human-readable order reference code.",
+          "minLength": 4,
+          "maxLength": 32,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID of the customer who placed the order.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Recipient full name.",
+          "minLength": 1,
+          "maxLength": 100
+        },
+        "shippingAddressSummary": {
+          "type": "string",
+          "description": "Street address for shipment delivery.",
+          "minLength": 5,
+          "maxLength": 240
+        },
+        "shippingCity": {
+          "type": "string",
+          "description": "Destination city.",
+          "minLength": 2,
+          "maxLength": 80
+        },
+        "shippingPostalCode": {
+          "type": "string",
+          "description": "Destination postal code.",
+          "minLength": 2,
+          "maxLength": 24
+        },
+        "shippingCountry": {
+          "type": "string",
+          "description": "Destination country.",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "Payment method used for checkout.",
+          "enum": ["Card", "Express Pay", "Cash on Delivery"],
+          "minLength": 2,
+          "maxLength": 32
+        },
+        "paymentLast4": {
+          "type": "string",
+          "description": "Last 4 digits of card or empty string for COD.",
+          "minLength": 0,
+          "maxLength": 4
+        },
+        "paymentStatus": {
+          "type": "string",
+          "description": "Current settlement state of payment.",
+          "enum": ["Paid", "Authorized", "COD Pending", "Refunded"],
+          "minLength": 2,
+          "maxLength": 32
+        },
+        "subtotal": {
+          "type": "number",
+          "description": "Order items subtotal in MAD."
+        },
+        "shippingFee": {
+          "type": "number",
+          "description": "Shipping cost in MAD."
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "Final total charged in MAD."
+        },
+        "itemCount": {
+          "type": "number",
+          "description": "Total number of units in the order."
+        },
+        "primaryItemTitle": {
+          "type": "string",
+          "description": "Headline product name for summary display.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "primaryItemImage": {
+          "type": "string",
+          "description": "Image path of the primary item.",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "shipmentStatus": {
+          "type": "string",
+          "description": "Real-time stage of the shipment lifecycle.",
+          "enum": [
+            "Order Confirmed",
+            "Quality Inspection",
+            "Dispatched from Atelier",
+            "In Transit",
+            "Out for Delivery",
+            "Delivered"
+          ],
+          "minLength": 2,
+          "maxLength": 40
+        },
+        "carrier": {
+          "type": "string",
+          "description": "Logistics partner handling the parcel.",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "trackingNumber": {
+          "type": "string",
+          "description": "Carrier waybill tracking identifier.",
+          "minLength": 6,
+          "maxLength": 40,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "currentHub": {
+          "type": "string",
+          "description": "Current logistics facility or city.",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "destinationHub": {
+          "type": "string",
+          "description": "Target delivery city and postal zone.",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "estimatedDelivery": {
+          "type": "string",
+          "description": "Formatted estimated delivery window.",
+          "minLength": 4,
+          "maxLength": 60
+        },
+        "progressPercent": {
+          "type": "number",
+          "description": "Numeric completion percentage from 0 to 100."
+        },
+        "lastStatusNote": {
+          "type": "string",
+          "description": "Latest scan note from logistics carrier.",
+          "minLength": 2,
+          "maxLength": 240
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of order creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of latest shipment update."
+        }
+      },
+      "required": [
+        "orderNumber",
+        "userId",
+        "customerName",
+        "shippingAddressSummary",
+        "shippingCity",
+        "shippingPostalCode",
+        "shippingCountry",
+        "paymentMethod",
+        "paymentLast4",
+        "paymentStatus",
+        "subtotal",
+        "shippingFee",
+        "totalAmount",
+        "itemCount",
+        "primaryItemTitle",
+        "primaryItemImage",
+        "shipmentStatus",
+        "carrier",
+        "trackingNumber",
+        "currentHub",
+        "destinationHub",
+        "estimatedDelivery",
+        "progressPercent",
+        "lastStatusNote",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "OrderItem": {
+      "title": "OrderItem",
+      "description": "Individual garment or sneaker line item belonging to an order.",
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "Parent order document ID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID of the customer who owns the parent order.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Catalog product identifier.",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "title": {
+          "type": "string",
+          "description": "Product name.",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "category": {
+          "type": "string",
+          "description": "Product category.",
+          "enum": ["Sneakers", "Apparel"],
+          "minLength": 2,
+          "maxLength": 32
+        },
+        "size": {
+          "type": "string",
+          "description": "Selected size.",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "colorway": {
+          "type": "string",
+          "description": "Selected colorway name.",
+          "minLength": 1,
+          "maxLength": 60
+        },
+        "unitPrice": {
+          "type": "number",
+          "description": "Unit price in USD."
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Quantity ordered."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Product image URL.",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of item record creation."
+        }
+      },
+      "required": [
+        "orderId",
+        "userId",
+        "productId",
+        "title",
+        "category",
+        "size",
+        "colorway",
+        "unitPrice",
+        "quantity",
+        "imageUrl",
+        "createdAt"
+      ]
+    },
+    "ShipmentEvent": {
+      "title": "ShipmentEvent",
+      "description": "Real-time carrier scan checkpoint in an order's shipment timeline.",
+      "type": "object",
+      "properties": {
+        "orderId": {
+          "type": "string",
+          "description": "Parent order document ID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userId": {
+          "type": "string",
+          "description": "UID of the customer who owns the parent order.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "statusStage": {
+          "type": "string",
+          "description": "Shipment lifecycle stage corresponding to this scan.",
+          "enum": [
+            "Order Confirmed",
+            "Quality Inspection",
+            "Dispatched from Atelier",
+            "In Transit",
+            "Out for Delivery",
+            "Delivered"
+          ],
+          "minLength": 2,
+          "maxLength": 40
+        },
+        "location": {
+          "type": "string",
+          "description": "Facility or hub location of the checkpoint.",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed scan event message.",
+          "minLength": 2,
+          "maxLength": 240
+        },
+        "timestampLabel": {
+          "type": "string",
+          "description": "Formatted local time label for timeline display.",
+          "minLength": 2,
+          "maxLength": 60
+        },
+        "stepIndex": {
+          "type": "number",
+          "description": "Numeric stage index (0 to 5)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of the event."
+        }
+      },
+      "required": [
+        "orderId",
+        "userId",
+        "statusStage",
+        "location",
+        "description",
+        "timestampLabel",
+        "stepIndex",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Stores public/general non-PII profile information for each authenticated member."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/UserPrivateInfo" },
+      "description": "Isolated PII storage (email, phone, shipping address, saved payment metadata) restricted strictly to the owner."
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Customer orders containing payment summary and live shipment tracking status."
+    },
+    "/orders/{orderId}/items/{itemId}": {
+      "schema": { "$ref": "#/entities/OrderItem" },
+      "description": "Subcollection of line items purchased within a specific order."
+    },
+    "/orders/{orderId}/events/{eventId}": {
+      "schema": { "$ref": "#/entities/ShipmentEvent" },
+      "description": "Subcollection of real-time carrier scan checkpoints for a specific order."
+    }
+  }
+}
